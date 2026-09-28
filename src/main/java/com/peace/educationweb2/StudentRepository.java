@@ -72,7 +72,7 @@ public class StudentRepository {
     public List<Student> getList() {
 
         try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/education",
-                "root", "r17cd5@!rs%la")) {//try-with-resources Closeable finally
+                "root", "r17cd5@!rs%la")) {
             PreparedStatement statement = connection.prepareStatement("select * from students");
 
             ResultSet resultSet = statement.executeQuery();

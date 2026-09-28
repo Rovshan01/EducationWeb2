@@ -24,16 +24,35 @@ public class StudentController extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String name = request.getParameter("name");
-        String surname = request.getParameter("surname");
-        Integer age = Integer.parseInt(request.getParameter("age"));
-        BigDecimal scholarship = new BigDecimal(request.getParameter("scholarship"));
-        Integer universityId = Integer.parseInt(request.getParameter("universityId"));
+        String action = request.getParameter("action");
+        if ("logout".equalsIgnoreCase(action)) {
+            request.getSession().invalidate();
+            response.sendRedirect("login.jsp");
+        } else if ("delete".equalsIgnoreCase(action)) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            repository.delete(id);
+            response.sendRedirect("student-education");
 
-        Student student = new Student(null, name, surname, age, scholarship, universityId);
+        } else if ("login".equalsIgnoreCase(action)) {
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
 
-        repository.insert(student);
+            if (username.equals("admin") && password.equalsIgnoreCase("admin")) {
+                request.getSession().setAttribute("LoggedInUser", username);
+                response.sendRedirect("student-education");
+            }
+        } else {
+            String name = request.getParameter("name");
+            String surname = request.getParameter("surname");
+            Integer age = Integer.parseInt(request.getParameter("age"));
+            BigDecimal scholarship = new BigDecimal(request.getParameter("scholarship"));
+            Integer universityId = Integer.parseInt(request.getParameter("universityId"));
 
-        response.sendRedirect("student-education");
+            Student student = new Student(null, name, surname, age, scholarship, universityId);
+
+            repository.insert(student);
+
+            response.sendRedirect("student-education");
+        }
     }
 }
